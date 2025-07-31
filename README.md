@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./Banner.jpeg" alt="Resend Mailer banner" style="max-width: 100%; height: auto;">
+</p>
+
 # Resend Mailer
 
 A lightweight WordPress plugin that routes all outgoing `wp_mail()` email through the [Resend](https://resend.com) transactional email API. Works as a clean SMTP alternative. No extra features, just reliable delivery.
