@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="./Banner.jpeg" alt="Resend Mailer banner" style="max-width: 100%; height: auto;">
-</p>
+![Resend Mailer banner](./Banner.jpg)
 
 # Resend Mailer
 
