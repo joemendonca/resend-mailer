@@ -12,11 +12,12 @@
  * Domain Path: /languages
  */
 
+// Override wp_mail to use Resend API
 add_filter('wp_mail', function($args) {
     $apiKey = get_option('resend_mailer_api_key');
     $from   = get_option('resend_mailer_from_email');
 
-    if (!$apiKey || !$from) return $args; // fallback if not configured
+    if (!$apiKey || !$from) return $args; // Fallback if not configured
 
     $to = is_array($args['to']) ? implode(',', $args['to']) : $args['to'];
 
@@ -34,7 +35,8 @@ add_filter('wp_mail', function($args) {
     ]);
 
     error_log('Resend API response: ' . print_r(wp_remote_retrieve_body($response), true));
-    return $args;
+
+    return $args; // Do not stop wp_mail completely, just hook into it
 });
 
 // Register plugin settings
@@ -58,22 +60,39 @@ add_action('admin_menu', function () {
 function resend_mailer_settings_page() {
     ?>
     <div class="wrap">
-        <h1><?php _e('Resend Mailer Settings', 'resend-mailer'); ?></h1>
+        <h1>Resend Mailer Settings</h1>
+
+        <div style="margin: 20px 0 40px; text-align: center;">
+            <img src="<?php echo plugin_dir_url(__FILE__); ?>Banner.jpg" 
+                 alt="Resend Mailer Banner" 
+                 style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        </div>
+
         <form method="post" action="options.php">
             <?php
             settings_fields('resend_mailer_settings');
             do_settings_sections('resend_mailer_settings');
             ?>
-            <table class="form-table">
-                <tr valign="top">
-                    <th scope="row"><?php _e('API Key', 'resend-mailer'); ?></th>
-                    <td><input type="text" name="resend_mailer_api_key" value="<?php echo esc_attr(get_option('resend_mailer_api_key')); ?>" size="50" /></td>
+
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row"><label for="resend_mailer_api_key">API Key</label></th>
+                    <td>
+                        <input type="text" id="resend_mailer_api_key" name="resend_mailer_api_key" 
+                               value="<?php echo esc_attr(get_option('resend_mailer_api_key')); ?>" 
+                               class="regular-text" placeholder="e.g. re_xxxxxxxxxxxxxxx" />
+                    </td>
                 </tr>
-                <tr valign="top">
-                    <th scope="row"><?php _e('From Email Address', 'resend-mailer'); ?></th>
-                    <td><input type="email" name="resend_mailer_from_email" value="<?php echo esc_attr(get_option('resend_mailer_from_email')); ?>" size="50" /></td>
+                <tr>
+                    <th scope="row"><label for="resend_mailer_from_email">From Email</label></th>
+                    <td>
+                        <input type="email" id="resend_mailer_from_email" name="resend_mailer_from_email" 
+                               value="<?php echo esc_attr(get_option('resend_mailer_from_email')); ?>" 
+                               class="regular-text" placeholder="noreply@yourdomain.com" />
+                    </td>
                 </tr>
             </table>
+
             <?php submit_button(); ?>
         </form>
     </div>
